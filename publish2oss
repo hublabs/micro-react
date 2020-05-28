@@ -1,0 +1,12 @@
+# echo $1
+if [ "$1" = "qa" ]
+then
+	echo 'start...'
+	/Users/liche/ossutilmac64 rm oss://hublabs-sub1-qa -r -f
+	echo 'clear oss success'
+	/Users/liche/ossutilmac64 cp ./build  oss://hublabs-sub1-qa -r
+	echo 'publish qa success'
+elif [ "$1" = "prd" ]
+then
+	echo 'publish prd success'
+fi

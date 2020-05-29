@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { message, Form, Input, Button, Tag } from "antd";
+import { message, Form, Input, Button, Tag, Card } from "antd";
 import actions from "@/shared/actions";
 
-import './index.scss';
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -13,7 +12,7 @@ const tailLayout = {
 const Login = (props) => {
     const [token, setToken] = useState('');
     useEffect(() => {
-        console.log("didMont.props=>", props);
+        // console.log("didMont.props=>", props);
         actions.onGlobalStateChange((state) => {
             const { token } = state;
             // 未登录 - 返回主页
@@ -49,14 +48,14 @@ const Login = (props) => {
 
     if (token) {
         return (
-            <div style={{ padding: '20px', height: '100%' }}>
+            <Card title="登录" style={{ height: '100%' }}>
                 <Tag color="green">已登录</Tag>
                 <Button type="primary" danger onClick={logout} style={{ marginTop: '10px' }}>切换账号</Button>
-            </div>
+            </Card>
         )
     }
     return (
-        <div className="login-page">
+        <Card title="登录" style={{ height: '100%' }}>
             <Form
                 {...layout}
                 name="basic"
@@ -87,7 +86,7 @@ const Login = (props) => {
                     </Button>
                 </Form.Item>
             </Form>
-        </div >
+        </Card>
     );
 };
 

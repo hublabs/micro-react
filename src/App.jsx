@@ -9,7 +9,7 @@ import {
 import Home from "./pages/home";
 import List from "./pages/list";
 import Login from "./pages/login";
-import './App.css'
+import './App.scss'
 
 const { Sider, Content } = Layout;
 

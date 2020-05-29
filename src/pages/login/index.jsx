@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { message, Form, Input, Button, Tag } from "antd";
 import actions from "@/shared/actions";
 
-import './index.css';
+import './index.scss';
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },

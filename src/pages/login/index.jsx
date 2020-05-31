@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { message, Form, Input, Button, Tag, Card } from "antd";
 import actions from "@/shared/actions";
+import util from '../../utils/util.js'
 
 const layout = {
     labelCol: { span: 8 },
@@ -11,6 +12,7 @@ const tailLayout = {
 };
 const Login = (props) => {
     const [token, setToken] = useState('');
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         // console.log("didMont.props=>", props);
         actions.onGlobalStateChange((state) => {
@@ -30,17 +32,46 @@ const Login = (props) => {
     }, [props]);
 
     useEffect(() => {
-        token && window.localStorage.setItem("token", token)
+        if (token) {
+            window.localStorage.setItem("token", token)
+            setLoading(true)
+            util.httpRequest({
+                url: util.COLLEAGUE_API + '/v1/login/colleague-info',
+                method: 'GET',
+            }).then(res => {
+                // console.log('getStoreInfo=>', res);
+                window.localStorage.setItem("storeInfo", JSON.stringify(res.stores))
+                setLoading(false)
+            }).catch(err => {
+                setLoading(false)
+            })
+        }
     }, [token]);
-
     const logout = () => {
         setToken('')
         window.localStorage.removeItem("token")
     }
     const onFinish = values => {
-        console.log('Success:', values);
-        let token = "token_xxxxxx"
-        setToken(token)
+        // console.log('Success:', values);
+        let { username, password } = values
+        setLoading(true)
+        util.httpRequest({
+            url: util.LOGIN_API + '/v1/logins/user-name',
+            method: 'POST',
+            data: {
+                username: username,
+                password: password
+            }
+        }).then(res => {
+            // console.log("token=>", res.token);
+            message.success('登录成功');
+            setToken(res.token)
+            setLoading(false)
+        }).catch(err => {
+            setLoading(false)
+            console.log('api错误=>', err);
+            message.error("登录错误");
+        })
     }
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
@@ -59,7 +90,7 @@ const Login = (props) => {
             <Form
                 {...layout}
                 name="basic"
-                initialValues={{ username: 'admin', password: '1111' }}
+                initialValues={{ username: 'system@email.com', password: '1111' }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 style={{ width: '400px' }}
@@ -81,7 +112,7 @@ const Login = (props) => {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" loading={loading}>
                         登录
                     </Button>
                 </Form.Item>
